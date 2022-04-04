@@ -4,10 +4,11 @@
 
 
 html,body {
-    @apply bg-slate-900;
-    @apply text-white;
+    @apply bg-slate-200;
+    @apply text-black;
 }
 
 body {
     @apply p-8;
 }
+
