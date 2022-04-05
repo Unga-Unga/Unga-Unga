@@ -61,18 +61,18 @@ export default function Home() {
         </nav>
       </div>
 
-      {isExercises && (
-        <div role="list" className="h-[75vh] overflow-y-auto mt-3">
-          {exercises.map(e => (
-            <DashboardCard exercise={e} key={e.id} record={records[e.name] ? records[e.name][0] : undefined} />
+      {!isExercises && (
+        <div role="list" className="h-[75vh] overflow-y-auto grid gap-2 grid-cols-2 mt-3">
+          {Object.keys(records).map(ex => (
+            <SmallCard exercise={ex} records={records[ex]} key={ex} />
           ))}
         </div>
       )}
 
-      {!isExercises && (
-        <div role="list" className="h-[65vh] overflow-y-auto grid gap-2 grid-cols-2 mt-3">
-          {Object.keys(records).map(ex => (
-            <SmallCard exercise={ex} records={records[ex]} key={ex} />
+      {isExercises && (
+        <div role="list" className="h-[75vh] overflow-y-auto mt-3">
+          {exercises.map(e => (
+            <DashboardCard exercise={e} key={e.id} record={records[e.name] ? records[e.name][0] : undefined} />
           ))}
         </div>
       )}
