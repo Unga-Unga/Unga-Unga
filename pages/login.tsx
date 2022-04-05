@@ -1,9 +1,11 @@
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useUser } from '../providers/user.provider';
 
 const Login = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [showError, setShowError] = useState(false);
+  const router = useRouter();
 
   const { login } = useUser();
 
@@ -16,12 +18,16 @@ const Login = () => {
   const onLogin = async () => {
     const success = await login();
 
-    if (!success) {
-      setShowError(true);
+    if (success) {
+      router.push('/');
+    } else {
+      if (!success) {
+        setShowError(true);
 
-      setTimeout(() => {
-        setShowError(false);
-      }, 4000);
+        setTimeout(() => {
+          setShowError(false);
+        }, 4000);
+      }
     }
   };
 
