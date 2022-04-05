@@ -3,7 +3,7 @@ import { Record } from '../../types';
 
 const SmallCard = ({ records, exercise }: { exercise: string; records: Record[] }) => {
   return (
-    <Link href={`/exercise/${exercise}`}>
+    <Link href={{ pathname: `/exercise/[exercise]`, query: { exercise } }} passHref>
       <div className="rounded shadow-xl bg-white py-2">
         <div className="border-b border-slate-300 py-1">
           <p className="px-2 w-full text-center text-sm font-medium text-indigo-600">{exercise}</p>

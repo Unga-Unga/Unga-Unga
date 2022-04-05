@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Auth, browserLocalPersistence, getAuth, GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { Firestore, getFirestore } from '@firebase/firestore';
+import { getFirestore } from '@firebase/firestore';
+import { useRouter } from 'next/router';
 import('firebase/firestore');
 
 let Context = createContext<{ db: ReturnType<typeof getFirestore>; user?: User; login: () => Promise<boolean>; isLogged: boolean }>(null);
@@ -12,6 +13,8 @@ const UserProvider = props => {
   const [providerGoogleAuth] = useState(new GoogleAuthProvider());
   const [auth, setAuth] = useState<Auth>();
   const [isLogged, setIsLogged] = useState(false);
+  const router = useRouter();
+
   const [app] = useState(
     initializeApp({
       apiKey: 'AIzaSyBgOUhjUYAWyeO_YC_vcWZNRB8G7mc15o0',
@@ -30,18 +33,25 @@ const UserProvider = props => {
     await auth.setPersistence(browserLocalPersistence);
 
     try {
-      const result = await signInWithPopup(auth, providerGoogleAuth);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
-      // TODO - save token to local storage or cookie or something
-      const user = result.user;
-
-      setUser(user);
-      setIsLogged(true);
+      await signInWithPopup(auth, providerGoogleAuth);
 
       return true;
     } catch (error) {
       return false;
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkUser = (user: User) => {
+    if (user) {
+      setUser(user);
+      setIsLogged(true);
+    } else {
+      setUser(null);
+      setIsLogged(false);
+      if (router.pathname !== '/login') {
+        router.push('/login');
+      }
     }
   };
 
@@ -52,13 +62,10 @@ const UserProvider = props => {
   }, [app]);
 
   useEffect(() => {
-    if (app && auth?.currentUser) {
-      setUser(auth?.currentUser);
-      setIsLogged(true);
-    } else {
-      setIsLogged(false);
+    if (auth) {
+      auth.onAuthStateChanged(user => checkUser(user));
     }
-  }, [auth, app]);
+  }, [auth, checkUser]);
 
   return (
     <Context.Provider
