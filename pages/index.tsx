@@ -5,21 +5,25 @@ import { Switch } from '@headlessui/react';
 import SmallCard from '../components/dashboard/smallCard';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { useUser } from '../providers/user.provider';
-import { Exercise } from '../types';
+import { Exercise, Record } from '../types';
+import groupBy from 'lodash/groupBy';
 
 export default function Home() {
   const userCtx = useUser();
   const [isExercises, setIsExercises] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [records, setRecords] = useState<{ [x: string]: Record[] }>({});
 
   useEffect(() => {
     const getData = async () => {
-      const res = await getDocs(collection(userCtx.db, 'exercises'));
-      setExercises(res.docs.map(d => d.data()) as Exercise[]);
+      const [resEx, resRecords] = await Promise.all([getDocs(collection(userCtx.db, 'exercises')), getDocs(collection(userCtx.db, 'records'))]);
+      setExercises((resEx.docs.map(d => d.data()) as Exercise[]).sort((e1, e2) => e1.name.localeCompare(e2.name)));
+      setRecords(groupBy(resRecords.docs.map(d => d.data()).sort((r1, r2) => r2.weight - r1.weight) as Record[], 'exercise'));
     };
 
     getData();
   }, []);
+
   return (
     <div>
       <h1 className="text-2xl mb-2">Top Unga Unga</h1>
@@ -48,20 +52,20 @@ export default function Home() {
       </div>
 
       {isExercises && (
-        <div role="list" className="h-[65vh] overflow-y-auto mt-3">
+        <div role="list" className="h-[75vh] overflow-y-auto mt-3">
           {exercises.map(e => (
-            <DashboardCard exercise={e} key={e.id} />
+            <DashboardCard exercise={e} key={e.id} record={records[e.name] ? records[e.name][0] : undefined} />
           ))}
         </div>
       )}
 
-      {/*{!isExercises && (*/}
-      {/*  <div role="list" className="h-[65vh] overflow-y-auto grid gap-2 grid-cols-2 mt-3">*/}
-      {/*    {records.map(r => (*/}
-      {/*      <SmallCard exercise={'Deadlift'} records={records} key={r.id} />*/}
-      {/*    ))}*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      {!isExercises && (
+        <div role="list" className="h-[65vh] overflow-y-auto grid gap-2 grid-cols-2 mt-3">
+          {Object.keys(records).map(ex => (
+            <SmallCard exercise={ex} records={records[ex]} key={ex} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

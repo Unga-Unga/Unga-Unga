@@ -1,8 +1,8 @@
 import { SparklesIcon } from '@heroicons/react/outline';
 import { ChevronRightIcon } from '@heroicons/react/solid';
-import { Exercise } from '../../types';
+import { Exercise, Record } from '../../types';
 
-const DashboardCard = ({ exercise }: { exercise: Exercise }) => {
+const DashboardCard = ({ exercise, record }: { record?: Record; exercise: Exercise }) => {
   return (
     <div className="bg-white rounded mb-4 shadow-lg">
       <a href="#" className="block hover:bg-gray-50">
@@ -13,12 +13,14 @@ const DashboardCard = ({ exercise }: { exercise: Exercise }) => {
                 <p className="font-medium text-indigo-600 truncate">{exercise.name}</p>
               </div>
               <div className="mt-2 flex">
-                <div className="flex items-center text-sm text-gray-500">
-                  <SparklesIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                  {/*<p>*/}
-                  {/*  {record.user} @ {record.weight}kg*/}
-                  {/*</p>*/}
-                </div>
+                {record && (
+                  <div className="flex items-center text-sm text-gray-500">
+                    <SparklesIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <p>
+                      {record.user} @ {record.weight}kg
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
