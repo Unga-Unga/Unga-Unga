@@ -22,12 +22,12 @@ export default function Home() {
     };
 
     getData();
-  }, []);
+  }, [userCtx.db]);
 
   return (
     <div>
       <h1 className="text-2xl mb-2">Top Unga Unga</h1>
-      <hr className="w-full h-[1px] border-b-[1px] border-slate-400 opacity-40  mb-4" />
+      <hr className="w-full h-[1px] border-b-[1px] border-slate-400 opacity-40 mb-4" />
 
       <div className="w-full flex justify-center items-center mt-4">
         <nav className="flex space-x-4" aria-label="Tabs">
