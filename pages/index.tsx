@@ -2,7 +2,7 @@ import DashboardCard from '../components/dashboard/card';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import SmallCard from '../components/dashboard/smallCard';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { useUser } from '../providers/user.provider';
 import { Exercise, Record } from '../types';
 import groupBy from 'lodash/groupBy';

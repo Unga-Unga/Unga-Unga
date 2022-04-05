@@ -1,66 +1,33 @@
+import { collection, getDocs } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useUser } from '../../../providers/user.provider';
+
+import groupBy from 'lodash/groupBy';
+import { Record } from '../../../types';
 
 const Exercise = () => {
   const router = useRouter();
 
   const { name: exerciseName } = router.query;
 
-  const users = [
-    {
-      id: 1,
-      exercise: {
-        name: 'Deadlift',
-        id: 1,
-        total: 11,
-      },
-      user: 'Jose',
-      weight: 120,
-    },
-    {
-      id: 2,
-      exercise: {
-        name: 'Deadlift',
-        id: 1,
-        total: 9,
-      },
-      user: 'Sergio',
-      weight: 120,
-    },
-    {
-      id: 3,
-      exercise: {
-        name: 'Deadlift',
-        id: 1,
-        total: 1,
-      },
-      user: 'Manu',
-      weight: 120,
-    },
-    {
-      id: 5,
-      exercise: {
-        name: 'Deadlift',
-        id: 1,
-        total: 10,
-      },
-      user: 'Carlos',
-      weight: 120,
-    },
-    {
-      id: 6,
-      exercise: {
-        name: 'Deadlift',
-        id: 1,
-        total: 50,
-      },
-      user: 'Miguel',
-      weight: 120,
-    },
-  ].sort((a, b) => b.exercise.total - a.exercise.total);
-
   const goToNewExercise = () => {
     router.push(`/exercise/${exerciseName}/new`);
   };
+
+  const userCtx = useUser();
+
+  const [records, setRecords] = useState<{ [x: string]: Record[] }>({});
+
+  useEffect(() => {
+    const getData = async () => {
+      const resRecords = await getDocs(collection(userCtx.db, 'records'));
+
+      setRecords(groupBy(resRecords.docs.map(d => d.data()).sort((r1, r2) => r2.weight - r1.weight) as Record[], 'exercise'));
+    };
+
+    getData();
+  }, [userCtx.db]);
 
   return (
     <div className="flex flex-col">
@@ -83,13 +50,13 @@ const Exercise = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user, i) => (
+                {records?.[exerciseName as string]?.map((user, i) => (
                   <tr key={user.id} className="bg-gray-100 border-b">
                     <td className="flex flex-col gap-2 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       <span>
                         # {i + 1} {user.user}
                       </span>
-                      <span className="italic text-xs font-bold">{user.exercise.total} kg</span>
+                      <span className="italic text-xs font-bold">{user.weight} kg</span>
                     </td>
                     <td className="text-4xl text-right text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                       {i === 0 ? '🦍' : i === 1 ? '🏆' : i === 2 ? '💪🏽' : '🤡'}
