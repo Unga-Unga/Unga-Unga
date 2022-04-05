@@ -52,7 +52,7 @@ const Login = () => {
       )}
       {showError && (
         <div className="flex items-center flex-col">
-          <video ref={videoRef} autoPlay={true} loop={true} controls={false} src="wasted.mp4"></video>
+          <video ref={videoRef} autoPlay={true} loop={true} controls={false} src="/wasted.mp4"></video>
           <span className="text-center">WASTED, try again</span>
         </div>
       )}

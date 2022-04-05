@@ -2,8 +2,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Auth, browserLocalPersistence, getAuth, GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { Firestore, getFirestore } from '@firebase/firestore';
+import('firebase/firestore');
 
-let Context = createContext<{ user?: User; login: () => Promise<boolean>; isLogged: boolean }>(null);
+let Context = createContext<{ db: ReturnType<typeof getFirestore>; user?: User; login: () => Promise<boolean>; isLogged: boolean }>(null);
 
 const UserProvider = props => {
   const [user, setUser] = useState<User>(null);
@@ -21,6 +23,8 @@ const UserProvider = props => {
       measurementId: 'G-GL81VNRKMJ',
     }),
   );
+
+  const [db, setDB] = useState(getFirestore(app));
 
   const login = async () => {
     await auth.setPersistence(browserLocalPersistence);
@@ -44,6 +48,7 @@ const UserProvider = props => {
   useEffect(() => {
     getAnalytics(app);
     setAuth(getAuth(app));
+    setDB(getFirestore(app));
   }, [app]);
 
   useEffect(() => {
@@ -61,6 +66,7 @@ const UserProvider = props => {
         user,
         login,
         isLogged,
+        db,
       }}>
       {props.children}
     </Context.Provider>

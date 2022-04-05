@@ -1,6 +1,6 @@
 export type Exercise = {
   name: string;
-  id: number;
+  id: string;
 };
 
 export type Record = {
