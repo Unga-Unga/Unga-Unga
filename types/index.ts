@@ -4,8 +4,9 @@ export type Exercise = {
 };
 
 export type Record = {
-  id: number;
-  exercise: Exercise;
+  id: string;
+  exercise: string;
   user: string;
   weight: number;
+  date: Date;
 };
