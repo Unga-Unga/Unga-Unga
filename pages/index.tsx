@@ -1,5 +1,3 @@
-import { ChevronRightIcon } from '@heroicons/react/solid';
-import { SparklesIcon } from '@heroicons/react/outline';
 import DashboardCard from '../components/dashboard/card';
 import SearchBar from '../components/dashboard/searchBar';
 import { useMemo, useState } from 'react';
