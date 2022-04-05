@@ -17,7 +17,7 @@ const DashboardCard = ({ exercise, record }: { record?: Record; exercise: Exerci
                   <div className="flex items-center text-sm text-gray-500">
                     <SparklesIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                     <p>
-                      {record.user} @ {record.weight}kg
+                      {record.user} @ {record.weight}kg x {record.reps}
                     </p>
                   </div>
                 )}

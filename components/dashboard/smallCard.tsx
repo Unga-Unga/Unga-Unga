@@ -9,7 +9,10 @@ const SmallCard = ({ records, exercise }: { exercise: string; records: Record[] 
       <div className="flex flex-col px-2 py-1">
         {records.slice(0, 5).map((r, i) => (
           <p className="text-sm" key={r.user}>
-            #{i + 1} {r.user} {Math.round(r.weight)}kg
+            #{i + 1} {r.user}{' '}
+            <span className="text-xs">
+              {Math.round(r.weight)}kg x {r.reps}
+            </span>
           </p>
         ))}
       </div>
